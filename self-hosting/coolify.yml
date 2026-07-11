@@ -35,6 +35,8 @@ services:
   opch:
     image: clickhouse/clickhouse-server:25.10.2.65
     restart: always
+    environment:
+      - CLICKHOUSE_SKIP_USER_SETUP=1
     volumes:
       - opch-data:/var/lib/clickhouse
       - type: bind
