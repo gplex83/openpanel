@@ -163,7 +163,7 @@ services:
 
   opdashboard:
     build:
-      context: ../
+      context: .
       dockerfile: apps/start/Dockerfile
     restart: always
     depends_on:
