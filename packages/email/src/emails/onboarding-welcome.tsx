@@ -15,14 +15,14 @@ export type Props = z.infer<typeof zOnboardingWelcome>;
 export default OnboardingWelcome;
 export function OnboardingWelcome({
   firstName,
-  dashboardUrl = 'https://dashboard.openpanel.dev',
+  dashboardUrl = 'https://analytics.komfour.de',
   hasData = false,
   unsubscribeUrl,
 }: Props & { unsubscribeUrl?: string }) {
   return (
     <Layout unsubscribeUrl={unsubscribeUrl}>
       <Text>Hi{firstName ? ` ${firstName}` : ''},</Text>
-      <Text>Carl here. I build OpenPanel. Thanks for signing up.</Text>
+      <Text>Thanks for signing up with komFOUR Analytics.</Text>
       <Text>
         Your trial runs for 30 days with everything included. No card needed
         until you decide to stay.
@@ -70,13 +70,13 @@ export function OnboardingWelcome({
           <Text>If you get stuck, just reply to this email.</Text>
         </>
       )}
-      <Text>Carl</Text>
+      <Text>The komFOUR Team</Text>
     </Layout>
   );
 }
 
 OnboardingWelcome.PreviewProps = {
   firstName: 'Alex',
-  dashboardUrl: 'https://dashboard.openpanel.dev/org-id',
+  dashboardUrl: 'https://analytics.komfour.de',
   hasData: false,
 };

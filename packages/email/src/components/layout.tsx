@@ -50,10 +50,10 @@ export function Layout({ children, unsubscribeUrl }: Props) {
           >
             <Section className="p-6">
               <Img
-                src={'https://openpanel.dev/logo.png'}
+                src={'https://analytics.komfour.de/logo192.png'}
                 width="80"
                 height="80"
-                alt="OpenPanel Logo"
+                alt="komFOUR Logo"
                 style={{ borderRadius: 4 }}
               />
             </Section>

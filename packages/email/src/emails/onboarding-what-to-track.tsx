@@ -48,8 +48,8 @@ export function OnboardingWhatToTrack({
       ) : (
         <>
           <Text>
-            You created your OpenPanel account two days ago, but no events have
-            come in yet.
+            You created your komFOUR Analytics account two days ago, but no
+            events have come in yet.
           </Text>
           <Text>
             Usually that means the install didn't happen, or something is
@@ -70,7 +70,7 @@ export function OnboardingWhatToTrack({
           </Text>
         </>
       )}
-      <Text>Carl</Text>
+      <Text>The komFOUR Team</Text>
     </Layout>
   );
 }

@@ -37,7 +37,7 @@ function deltaColor(direction?: 'up' | 'down' | 'flat'): string {
 
 export function WeeklyDigest({
   projectName,
-  dashboardUrl = 'https://dashboard.openpanel.dev',
+  dashboardUrl = 'https://analytics.komfour.de',
   dateRange,
   narrative,
   stats,

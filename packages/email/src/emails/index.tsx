@@ -35,7 +35,7 @@ export const templates = {
     schema: zEmailResetPassword,
   },
   'onboarding-welcome': {
-    subject: () => 'Welcome to OpenPanel',
+    subject: () => 'Welcome to komFOUR Analytics',
     Component: OnboardingWelcome,
     schema: zOnboardingWelcome,
     category: 'onboarding' as const,
@@ -63,8 +63,8 @@ export const templates = {
   'onboarding-trial-ending': {
     subject: (data: z.infer<typeof zOnboardingTrialEnding>) =>
       data.trialEndDate
-        ? `Your OpenPanel trial ends ${data.trialEndDate}`
-        : 'Your OpenPanel trial ends soon',
+        ? `Your komFOUR Analytics trial ends ${data.trialEndDate}`
+        : 'Your komFOUR Analytics trial ends soon',
     Component: OnboardingTrialEnding,
     schema: zOnboardingTrialEnding,
   },

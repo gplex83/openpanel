@@ -1,8 +1,7 @@
-import { Link, Text } from '@react-email/components';
+import { Text } from '@react-email/components';
 import React from 'react';
 import { z } from 'zod';
 import { Layout } from '../components/layout';
-import { withUtm } from '../utm';
 
 export const zOnboardingFeatureRequest = z.object({
   firstName: z.string().optional(),
@@ -21,23 +20,16 @@ export function OnboardingFeatureRequest({
       <Text>Hi{firstName ? ` ${firstName}` : ''},</Text>
       <Text>
         You're halfway through your trial, so a quick question: is there
-        anything you expected OpenPanel to do that it doesn't?
+        anything you expected komFOUR Analytics to do that it doesn't?
       </Text>
-      <Text>
-        Just reply to this email. If you'd rather post publicly, the feedback
-        board is at{' '}
-        <Link href={withUtm('https://feedback.openpanel.dev', 'onboarding-feature-request')}>
-          feedback.openpanel.dev
-        </Link>
-        .
-      </Text>
+      <Text>Just reply to this email.</Text>
       {!hasData && (
         <Text>
           And if you never got around to installing the tracking, no hard
           feelings, but I'd like to know what got in the way.
         </Text>
       )}
-      <Text>Carl</Text>
+      <Text>The komFOUR Team</Text>
     </Layout>
   );
 }

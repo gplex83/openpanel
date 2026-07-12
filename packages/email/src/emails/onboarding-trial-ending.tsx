@@ -21,7 +21,7 @@ export type Props = z.infer<typeof zOnboardingTrialEnding>;
 export default OnboardingTrialEnding;
 export function OnboardingTrialEnding({
   firstName,
-  billingUrl = 'https://dashboard.openpanel.dev',
+  billingUrl = 'https://analytics.komfour.de',
   recommendedPlan,
   trialEndDate,
   hasData = true,
@@ -55,7 +55,7 @@ export function OnboardingTrialEnding({
           If you tried and something didn't work, reply and I'll help you sort
           it out before the trial runs out.
         </Text>
-        <Text>Carl</Text>
+        <Text>The komFOUR Team</Text>
       </Layout>
     );
   }
@@ -86,14 +86,14 @@ export function OnboardingTrialEnding({
         If something is holding you back, reply and tell me. I'd rather fix the
         reason than send you another reminder.
       </Text>
-      <Text>Carl</Text>
+      <Text>The komFOUR Team</Text>
     </Layout>
   );
 }
 
 OnboardingTrialEnding.PreviewProps = {
   firstName: 'Alex',
-  billingUrl: 'https://dashboard.openpanel.dev/org-id/billing',
+  billingUrl: 'https://analytics.komfour.de',
   recommendedPlan: '100K events per month for $20.00',
   trialEndDate: 'June 16',
   hasData: true,

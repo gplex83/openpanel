@@ -20,7 +20,7 @@ export type Props = z.infer<typeof zOnboardingTrialEnded>;
 export default OnboardingTrialEnded;
 export function OnboardingTrialEnded({
   firstName,
-  billingUrl = 'https://dashboard.openpanel.dev',
+  billingUrl = 'https://analytics.komfour.de',
   recommendedPlan,
   hasData = true,
   eventsCount,
@@ -35,11 +35,11 @@ export function OnboardingTrialEnded({
           The empty workspace will be cleaned up and that's the end of it.
         </Text>
         <Text>
-          If you want to give OpenPanel another go some day, it'll be here. And
-          if you remember what made you bounce, I'd like to hear it. One line
-          is fine.
+          If you want to give komFOUR Analytics another go some day, it'll be
+          here. And if you remember what made you bounce, I'd like to hear it.
+          One line is fine.
         </Text>
-        <Text>Carl</Text>
+        <Text>The komFOUR Team</Text>
       </Layout>
     );
   }
@@ -71,17 +71,17 @@ export function OnboardingTrialEnded({
         pressure you.
       </Text>
       <Text>
-        If OpenPanel wasn't right for you, a one-line reply saying why helps me
-        more than you'd think.
+        If komFOUR Analytics wasn't right for you, a one-line reply saying why
+        helps me more than you'd think.
       </Text>
-      <Text>Carl</Text>
+      <Text>The komFOUR Team</Text>
     </Layout>
   );
 }
 
 OnboardingTrialEnded.PreviewProps = {
   firstName: 'Alex',
-  billingUrl: 'https://dashboard.openpanel.dev/org-id/billing',
+  billingUrl: 'https://analytics.komfour.de',
   recommendedPlan: '100K events per month for $20.00',
   hasData: true,
   eventsCount: 84211,

@@ -19,7 +19,7 @@ export type Props = z.infer<typeof zOnboardingDashboards>;
 export default OnboardingDashboards;
 export function OnboardingDashboards({
   firstName,
-  dashboardUrl = 'https://dashboard.openpanel.dev',
+  dashboardUrl = 'https://analytics.komfour.de',
   hasData = false,
   eventsCount,
   unsubscribeUrl,
@@ -33,7 +33,7 @@ export function OnboardingDashboards({
           dashboard advice I'd normally send wouldn't help you yet.
         </Text>
         <Text>
-          If you still want to try OpenPanel, the install is the only thing in
+          If you still want to try it out, the install is the only thing in
           the way:{' '}
           <Link
             href={withUtm(
@@ -49,7 +49,7 @@ export function OnboardingDashboards({
           If something about the product put you off, I'd like to know what.
           One line is enough.
         </Text>
-        <Text>Carl</Text>
+        <Text>The komFOUR Team</Text>
       </Layout>
     );
   }
@@ -84,25 +84,14 @@ export function OnboardingDashboards({
         Once it exists you'll actually open it. That's the difference between
         having analytics and using them.
       </Text>
-      <Text>Carl</Text>
-      <span style={{ margin: '0 -20px', display: 'block' }}>
-        <img
-          src="https://openpanel.dev/_next/image?url=%2Fscreenshots%2Fdashboard-dark.webp&w=3840&q=75"
-          alt="Dashboard"
-          style={{
-            width: '100%',
-            height: 'auto',
-            borderRadius: '5px',
-          }}
-        />
-      </span>
+      <Text>The komFOUR Team</Text>
     </Layout>
   );
 }
 
 OnboardingDashboards.PreviewProps = {
   firstName: 'Alex',
-  dashboardUrl: 'https://dashboard.openpanel.dev/org-id',
+  dashboardUrl: 'https://analytics.komfour.de',
   hasData: true,
   eventsCount: 48211,
 };
