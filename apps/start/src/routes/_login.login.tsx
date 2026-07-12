@@ -1,10 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { AlertCircle } from 'lucide-react';
 import { z } from 'zod';
-import { Or } from '@/components/auth/or';
 import { SignInEmailForm } from '@/components/auth/sign-in-email-form';
-import { SignInGithub } from '@/components/auth/sign-in-github';
-import { SignInGoogle } from '@/components/auth/sign-in-google';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useCookieStore } from '@/hooks/use-cookie-store';
 import { createTitle, PAGE_TITLES } from '@/utils/title';
@@ -35,15 +32,6 @@ function LoginPage() {
     <div className="col w-full gap-8 text-left">
       <div>
         <h1 className="mb-2 font-bold text-3xl text-foreground">Sign in</h1>
-        <p className="text-muted-foreground">
-          Don't have an account?{' '}
-          <a
-            className="font-medium text-foreground underline"
-            href="/onboarding"
-          >
-            Create one today
-          </a>
-        </p>
       </div>
       {error && (
         <Alert
@@ -72,19 +60,6 @@ function LoginPage() {
         </Alert>
       )}
 
-      <div className="space-y-4">
-        <SignInGoogle
-          inviteId={inviteId}
-          isLastUsed={lastProvider === 'google'}
-          type="sign-in"
-        />
-        <SignInGithub
-          inviteId={inviteId}
-          isLastUsed={lastProvider === 'github'}
-          type="sign-in"
-        />
-      </div>
-      <Or />
       <SignInEmailForm inviteId={inviteId} isLastUsed={lastProvider === 'email'} />
     </div>
   );
