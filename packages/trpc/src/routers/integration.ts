@@ -51,7 +51,18 @@ export const integrationRouter = createTRPCRouter({
     }),
   createOrUpdateSlack: protectedProcedure
     .input(zCreateSlackIntegration)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const access = await getOrganizationAccess({
+        userId: ctx.session.userId,
+        organizationId: input.organizationId,
+      });
+
+      if (access?.role !== 'org:admin') {
+        throw new TRPCForbiddenError(
+          'Only organization admins can manage integrations',
+        );
+      }
+
       if (input.id) {
         const res = await db.integration.update({
           where: {
@@ -93,7 +104,18 @@ export const integrationRouter = createTRPCRouter({
     }),
   createOrUpdate: protectedProcedure
     .input(z.union([zCreateDiscordIntegration, zCreateWebhookIntegration]))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const access = await getOrganizationAccess({
+        userId: ctx.session.userId,
+        organizationId: input.organizationId,
+      });
+
+      if (access?.role !== 'org:admin') {
+        throw new TRPCForbiddenError(
+          'Only organization admins can manage integrations',
+        );
+      }
+
       // Validate JavaScript template if mode is javascript
       if (
         input.config.type === 'webhook' &&
@@ -144,8 +166,10 @@ export const integrationRouter = createTRPCRouter({
         organizationId: integration.organizationId,
       });
 
-      if (!access) {
-        throw new TRPCForbiddenError('You do not have access to this project');
+      if (access?.role !== 'org:admin') {
+        throw new TRPCForbiddenError(
+          'Only organization admins can manage integrations',
+        );
       }
 
       return db.integration.delete({

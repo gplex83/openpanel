@@ -39,6 +39,32 @@ export const getProjectAccess = cacheable(
   60 * 5
 );
 
+export const getProjectMemberRole = cacheable(
+  'getProjectMemberRole',
+  async ({
+    userId,
+    projectId,
+  }: {
+    userId: string;
+    projectId: string;
+  }): Promise<string | null> => {
+    const project = await getProjectById(projectId);
+    if (!project?.organizationId) {
+      return null;
+    }
+
+    const member = await db.member.findFirst({
+      where: {
+        organizationId: project.organizationId,
+        userId,
+      },
+    });
+
+    return member?.role ?? null;
+  },
+  60 * 5
+);
+
 export const getOrganizationAccess = cacheable(
   'getOrganizationAccess',
   async ({

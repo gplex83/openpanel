@@ -13,5 +13,6 @@ export function useOrganizationAccess(organizationId: string | undefined) {
   return {
     role: data?.role ?? null,
     isAdmin: data?.role === 'org:admin',
+    isViewer: data?.role === 'org:viewer',
   };
 }

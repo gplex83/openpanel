@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDownIcon,
@@ -23,7 +23,6 @@ import { useOrganizationAccess } from '@/hooks/use-organization-access';
 import { pushModal } from '@/modals';
 import type { RouterOutputs } from '@/trpc/client';
 import { cn } from '@/utils/cn';
-import { useParams } from '@tanstack/react-router';
 
 export default function SidebarOrganizationMenu({
   organization,
@@ -47,17 +46,19 @@ export default function SidebarOrganizationMenu({
         <LayoutListIcon size={20} />
         <div className="flex-1">Projects</div>
       </Link>
-      <Link
-        activeOptions={{ exact: true }}
-        className={cn(
-          'flex items-center gap-2 rounded-md px-3 py-2 font-medium text-[13px] transition-all hover:bg-def-200'
-        )}
-        from="/$organizationId"
-        to="/$organizationId/settings"
-      >
-        <CogIcon size={20} />
-        <div className="flex-1">Settings</div>
-      </Link>
+      {isAdmin && (
+        <Link
+          activeOptions={{ exact: true }}
+          className={cn(
+            'flex items-center gap-2 rounded-md px-3 py-2 font-medium text-[13px] transition-all hover:bg-def-200'
+          )}
+          from="/$organizationId"
+          to="/$organizationId/settings"
+        >
+          <CogIcon size={20} />
+          <div className="flex-1">Settings</div>
+        </Link>
+      )}
       {isAdmin && !isSelfHosted && (
         <Link
           activeOptions={{ exact: true }}
@@ -98,16 +99,18 @@ export default function SidebarOrganizationMenu({
           <div className="flex-1">Members</div>
         </Link>
       )}
-      <Link
-        className={cn(
-          'flex items-center gap-2 rounded-md px-3 py-2 font-medium text-[13px] transition-all hover:bg-def-200'
-        )}
-        from="/$organizationId"
-        to="/$organizationId/integrations"
-      >
-        <WorkflowIcon size={20} />
-        <div className="flex-1">Integrations</div>
-      </Link>
+      {isAdmin && (
+        <Link
+          className={cn(
+            'flex items-center gap-2 rounded-md px-3 py-2 font-medium text-[13px] transition-all hover:bg-def-200'
+          )}
+          from="/$organizationId"
+          to="/$organizationId/integrations"
+        >
+          <WorkflowIcon size={20} />
+          <div className="flex-1">Integrations</div>
+        </Link>
+      )}
     </>
   );
 }
@@ -117,41 +120,46 @@ export function ActionCTAButton() {
   const { organizationId } = useParams({ strict: false });
   const { isAdmin } = useOrganizationAccess(organizationId);
 
-  const ACTIONS = [
-    ...(isAdmin
-      ? [
-          {
-            label: 'Create a project',
-            icon: PlusIcon,
-            onClick: () => pushModal('AddProject'),
-          },
-          {
-            label: 'Invite a user',
-            icon: UsersIcon,
-            onClick: () => pushModal('CreateInvite'),
-          },
-        ]
-      : []),
-    {
-      label: 'Add integration',
-      icon: WorkflowIcon,
-      onClick: () =>
-        navigate({
-          to: '/$organizationId/integrations',
-          from: '/$organizationId',
-        }),
-    },
-  ];
+  const ACTIONS = isAdmin
+    ? [
+        {
+          label: 'Create a project',
+          icon: PlusIcon,
+          onClick: () => pushModal('AddProject'),
+        },
+        {
+          label: 'Invite a user',
+          icon: UsersIcon,
+          onClick: () => pushModal('CreateInvite'),
+        },
+        {
+          label: 'Add integration',
+          icon: WorkflowIcon,
+          onClick: () =>
+            navigate({
+              to: '/$organizationId/integrations',
+              from: '/$organizationId',
+            }),
+        },
+      ]
+    : [];
 
   const [currentActionIndex, setCurrentActionIndex] = useState(0);
 
   useEffect(() => {
+    if (ACTIONS.length === 0) {
+      return;
+    }
     const interval = setInterval(() => {
       setCurrentActionIndex((prevIndex) => (prevIndex + 1) % ACTIONS.length);
     }, 2000);
 
     return () => clearInterval(interval);
   }, []);
+
+  if (ACTIONS.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mb-4">

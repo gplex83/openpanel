@@ -310,7 +310,7 @@ export const zChartInput = zReportInput;
 export const zInviteUser = z.object({
   email: z.string().email(),
   organizationId: z.string(),
-  role: z.enum(['org:admin', 'org:member']),
+  role: z.enum(['org:admin', 'org:member', 'org:viewer']),
   access: z.array(z.string()),
 });
 

@@ -10,7 +10,7 @@ import {
 } from '@openpanel/db';
 import { zCreateNotificationRule } from '@openpanel/validation';
 
-import { getProjectAccess } from '../access';
+import { getProjectAccess, getProjectMemberRole } from '../access';
 import { TRPCForbiddenError } from '../errors';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 
@@ -80,6 +80,26 @@ export const notificationRouter = createTRPCRouter({
       // Clear the cache for the project
       await getNotificationRulesByProjectId.clear(input.projectId);
 
+      const projectAccess = await getProjectAccess({
+        userId: ctx.session.userId,
+        projectId: input.projectId,
+      });
+
+      if (!projectAccess) {
+        throw new TRPCForbiddenError('You do not have access to this project');
+      }
+
+      const projectRole = await getProjectMemberRole({
+        userId: ctx.session.userId,
+        projectId: input.projectId,
+      });
+
+      if (projectRole === 'org:viewer') {
+        throw new TRPCForbiddenError(
+          'Read-only members cannot manage notification rules',
+        );
+      }
+
       if (input.id) {
         const existing = await db.notificationRule.findUniqueOrThrow({
           where: {
@@ -87,12 +107,7 @@ export const notificationRouter = createTRPCRouter({
           },
         });
 
-        const access = await getProjectAccess({
-          userId: ctx.session.userId,
-          projectId: existing.projectId,
-        });
-
-        if (!access) {
+        if (existing.projectId !== input.projectId) {
           throw new TRPCForbiddenError(
             'You do not have access to this project',
           );
@@ -158,6 +173,17 @@ export const notificationRouter = createTRPCRouter({
 
       if (!access) {
         throw new TRPCForbiddenError('You do not have access to this project');
+      }
+
+      const role = await getProjectMemberRole({
+        userId: ctx.session.userId,
+        projectId: rule.projectId,
+      });
+
+      if (role === 'org:viewer') {
+        throw new TRPCForbiddenError(
+          'Read-only members cannot delete notification rules',
+        );
       }
 
       return db.notificationRule.delete({

@@ -143,6 +143,12 @@ export default function CreateInvite() {
                         Admin
                       </Label>
                     </div>
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="org:viewer" id="viewer" />
+                      <Label className="mb-0" htmlFor="viewer">
+                        Read-only
+                      </Label>
+                    </div>
                   </RadioGroup>
                 )}
               />

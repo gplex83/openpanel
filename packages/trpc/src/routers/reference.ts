@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db, getChartStartEndDate, getSettingsForProject } from '@openpanel/db';
 import { zCreateReference, zRange } from '@openpanel/validation';
 
-import { getProjectAccess } from '../access';
+import { getProjectAccess, getProjectMemberRole } from '../access';
 import { TRPCForbiddenError } from '../errors';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
@@ -37,7 +37,29 @@ export const referenceRouter = createTRPCRouter({
   create: protectedProcedure
     .input(zCreateReference)
     .mutation(
-      async ({ input: { title, description, datetime, projectId } }) => {
+      async ({ input: { title, description, datetime, projectId }, ctx }) => {
+        const access = await getProjectAccess({
+          userId: ctx.session.userId,
+          projectId,
+        });
+
+        if (!access) {
+          throw new TRPCForbiddenError(
+            'You do not have access to this project',
+          );
+        }
+
+        const role = await getProjectMemberRole({
+          userId: ctx.session.userId,
+          projectId,
+        });
+
+        if (role === 'org:viewer') {
+          throw new TRPCForbiddenError(
+            'Read-only members cannot create references',
+          );
+        }
+
         return db.reference.create({
           data: {
             title,
@@ -71,6 +93,17 @@ export const referenceRouter = createTRPCRouter({
         throw new TRPCForbiddenError('You do not have access to this project');
       }
 
+      const role = await getProjectMemberRole({
+        userId: ctx.session.userId,
+        projectId: existing.projectId,
+      });
+
+      if (role === 'org:viewer') {
+        throw new TRPCForbiddenError(
+          'Read-only members cannot edit references',
+        );
+      }
+
       return db.reference.update({
         where: { id: input.id },
         data: {
@@ -96,6 +129,17 @@ export const referenceRouter = createTRPCRouter({
 
       if (!access) {
         throw new TRPCForbiddenError('You do not have access to this project');
+      }
+
+      const role = await getProjectMemberRole({
+        userId: ctx.session.userId,
+        projectId: reference.projectId,
+      });
+
+      if (role === 'org:viewer') {
+        throw new TRPCForbiddenError(
+          'Read-only members cannot delete references',
+        );
       }
 
       return db.reference.delete({

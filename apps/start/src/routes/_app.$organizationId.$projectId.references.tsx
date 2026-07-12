@@ -27,7 +27,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { PlusIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -44,6 +44,22 @@ export const Route = createFileRoute(
         },
       ],
     };
+  },
+  beforeLoad: async ({ params, context }) => {
+    const access = await context.queryClient.fetchQuery(
+      context.trpc.organization.myAccess.queryOptions({
+        organizationId: params.organizationId,
+      }),
+    );
+    if (access?.role === 'org:viewer') {
+      throw redirect({
+        to: '/$organizationId/$projectId',
+        params: {
+          organizationId: params.organizationId,
+          projectId: params.projectId,
+        },
+      });
+    }
   },
 });
 

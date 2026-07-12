@@ -10,7 +10,7 @@ import { handleError, useTRPC } from '@/integrations/trpc/react';
 import { PAGE_TITLES, createOrganizationTitle } from '@/utils/title';
 import { zEditOrganization } from '@openpanel/validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type { z } from 'zod';
@@ -29,6 +29,19 @@ export const Route = createFileRoute('/_app/$organizationId/settings')({
         },
       ],
     };
+  },
+  beforeLoad: async ({ params, context }) => {
+    const access = await context.queryClient.fetchQuery(
+      context.trpc.organization.myAccess.queryOptions({
+        organizationId: params.organizationId,
+      }),
+    );
+    if (access?.role !== 'org:admin') {
+      throw redirect({
+        to: '/$organizationId',
+        params: { organizationId: params.organizationId },
+      });
+    }
   },
 });
 

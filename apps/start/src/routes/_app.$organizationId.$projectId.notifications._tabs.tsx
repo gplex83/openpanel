@@ -2,7 +2,12 @@ import { PageHeader } from '@/components/page-header';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePageTabs } from '@/hooks/use-page-tabs';
 import { PAGE_TITLES, createProjectTitle } from '@/utils/title';
-import { Outlet, createFileRoute, useRouter } from '@tanstack/react-router';
+import {
+  Outlet,
+  createFileRoute,
+  redirect,
+  useRouter,
+} from '@tanstack/react-router';
 
 export const Route = createFileRoute(
   '/_app/$organizationId/$projectId/notifications/_tabs',
@@ -16,6 +21,22 @@ export const Route = createFileRoute(
         },
       ],
     };
+  },
+  beforeLoad: async ({ params, context }) => {
+    const access = await context.queryClient.fetchQuery(
+      context.trpc.organization.myAccess.queryOptions({
+        organizationId: params.organizationId,
+      }),
+    );
+    if (access?.role === 'org:viewer') {
+      throw redirect({
+        to: '/$organizationId/$projectId',
+        params: {
+          organizationId: params.organizationId,
+          projectId: params.projectId,
+        },
+      });
+    }
   },
 });
 

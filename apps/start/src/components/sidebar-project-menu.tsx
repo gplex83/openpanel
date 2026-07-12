@@ -1,5 +1,5 @@
 import type { IServiceDashboards } from '@openpanel/db';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   BellIcon,
@@ -34,6 +34,7 @@ import {
 } from './ui/dropdown-menu';
 import { useChatState } from '@/components/chat/chat-context';
 import { SidebarChatComposer } from '@/components/chat/sidebar-chat-composer';
+import { useOrganizationAccess } from '@/hooks/use-organization-access';
 import { pushModal } from '@/modals';
 import { cn } from '@/utils/cn';
 
@@ -44,6 +45,9 @@ interface SidebarProjectMenuProps {
 export default function SidebarProjectMenu({
   dashboards,
 }: SidebarProjectMenuProps) {
+  const { organizationId } = useParams({ strict: false });
+  const { isViewer } = useOrganizationAccess(organizationId);
+
   return (
     <>
       <SidebarChatComposer />
@@ -69,22 +73,30 @@ export default function SidebarProjectMenu({
       <SidebarLink href={'/profiles'} icon={UserCircleIcon} label="Profiles" />
       <SidebarLink href={'/groups'} icon={Building2Icon} label="Groups" />
       <SidebarLink href={'/cohorts'} icon={TargetIcon} label="Cohorts" />
-      <div className="mt-4 mb-2 font-medium text-muted-foreground text-sm">
-        Manage
-      </div>
-      <SidebarLink
-        exact={false}
-        href={'/settings'}
-        icon={CogIcon}
-        label="Settings"
-      />
-      <SidebarLink href={'/references'} icon={GridIcon} label="References" />
-      <SidebarLink
-        exact={false}
-        href={'/notifications'}
-        icon={BellIcon}
-        label="Notifications"
-      />
+      {!isViewer && (
+        <>
+          <div className="mt-4 mb-2 font-medium text-muted-foreground text-sm">
+            Manage
+          </div>
+          <SidebarLink
+            exact={false}
+            href={'/settings'}
+            icon={CogIcon}
+            label="Settings"
+          />
+          <SidebarLink
+            href={'/references'}
+            icon={GridIcon}
+            label="References"
+          />
+          <SidebarLink
+            exact={false}
+            href={'/notifications'}
+            icon={BellIcon}
+            label="Notifications"
+          />
+        </>
+      )}
       <SidebarLink href={'..'} icon={UndoDotIcon} label="Back to workspace" />
     </>
   );
@@ -93,6 +105,8 @@ export default function SidebarProjectMenu({
 export function ActionCTAButton() {
   const navigate = useNavigate();
   const { openChatForContext } = useChatState();
+  const { organizationId } = useParams({ strict: false });
+  const { isViewer } = useOrganizationAccess(organizationId);
 
   const ACTIONS = [
     {
@@ -104,7 +118,7 @@ export function ActionCTAButton() {
           from: '/$organizationId/$projectId',
         }),
     },
-    {
+    !isViewer && {
       label: 'Create reference',
       icon: BookOpenIcon,
       onClick: () => pushModal('AddReference'),
@@ -119,7 +133,7 @@ export function ActionCTAButton() {
       icon: LayoutDashboardIcon,
       onClick: () => pushModal('AddDashboard'),
     },
-    {
+    !isViewer && {
       label: 'Create notification rule',
       icon: BellIcon,
       onClick: () =>
@@ -128,7 +142,11 @@ export function ActionCTAButton() {
           from: '/$organizationId/$projectId',
         }),
     },
-  ];
+  ].filter(Boolean) as {
+    label: string;
+    icon: typeof ChartLineIcon;
+    onClick: () => void;
+  }[];
 
   const [currentActionIndex, setCurrentActionIndex] = useState(0);
 

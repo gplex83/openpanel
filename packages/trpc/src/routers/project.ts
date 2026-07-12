@@ -14,7 +14,7 @@ import {
 import { zOnboardingProject, zProjectUpdate } from '@openpanel/validation';
 import { addHours } from 'date-fns';
 import { z } from 'zod';
-import { getProjectAccess } from '../access';
+import { getProjectAccess, getProjectMemberRole } from '../access';
 import { TRPCForbiddenError, TRPCBadRequestError } from '../errors';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 
@@ -64,6 +64,17 @@ export const projectRouter = createTRPCRouter({
 
       if (!access) {
         throw new TRPCForbiddenError('You do not have access to this project');
+      }
+
+      const role = await getProjectMemberRole({
+        userId: ctx.session.userId,
+        projectId: input.id,
+      });
+
+      if (role === 'org:viewer') {
+        throw new TRPCForbiddenError(
+          'Read-only members cannot change project settings'
+        );
       }
 
       const res = await db.project.update({
@@ -173,6 +184,17 @@ export const projectRouter = createTRPCRouter({
         throw new TRPCForbiddenError('You do not have access to this project');
       }
 
+      const role = await getProjectMemberRole({
+        userId: ctx.session.userId,
+        projectId: input.projectId,
+      });
+
+      if (role === 'org:viewer') {
+        throw new TRPCForbiddenError(
+          'Read-only members cannot delete projects'
+        );
+      }
+
       await db.project.update({
         where: {
           id: input.projectId,
@@ -198,6 +220,17 @@ export const projectRouter = createTRPCRouter({
 
       if (!access) {
         throw new TRPCForbiddenError('You do not have access to this project');
+      }
+
+      const role = await getProjectMemberRole({
+        userId: ctx.session.userId,
+        projectId: input.projectId,
+      });
+
+      if (role === 'org:viewer') {
+        throw new TRPCForbiddenError(
+          'Read-only members cannot manage project deletion'
+        );
       }
 
       const project = await db.project.findUnique({
