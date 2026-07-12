@@ -15,7 +15,6 @@ import SidebarProjectMenu, {
   ActionCTAButton as ActionProjectCTAButton,
 } from './sidebar-project-menu';
 import { Button } from './ui/button';
-import { useAppContext } from '@/hooks/use-app-context';
 import { useTRPC } from '@/integrations/trpc/react';
 import { cn } from '@/utils/cn';
 
@@ -78,7 +77,6 @@ export function SidebarContainer({
 }: SidebarContainerProps) {
   const [active, setActive] = useState(false);
   const location = useLocation();
-  const { isSelfHosted } = useAppContext();
   const { projectId } = useParams({ strict: false });
   const { isOpen: chatOpen, openChatForContext, closeChat } = useChatState();
 
@@ -160,15 +158,6 @@ export function SidebarContainer({
               )}
               <ProfileToggle className="h-12 flex-1 rounded-none hover:bg-accent hover:text-accent-foreground" />
             </div>
-            {isSelfHosted && (
-              <a
-                className="center-center flex h-12 cursor-pointer gap-2 border-border border-t px-4 font-medium text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-                href="https://openpanel.dev/supporter"
-              >
-                <span>Support Us</span>
-                <span>Pay What You Want</span>
-              </a>
-            )}
           </div>
         </div>
       </div>
