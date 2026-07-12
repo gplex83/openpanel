@@ -25,9 +25,12 @@ export function OnboardingLeftPanel() {
       <div className="komfour-pattern pointer-events-none absolute inset-0" />
       <LogoSquare className="komfour-logo-pulse relative size-20 shadow-lg" />
       <h1 className="relative mt-8 text-center text-3xl font-medium text-white">
-        Web- und Produkt-Analytics
+        komFOUR Analytics
       </h1>
-      <p className="relative mt-3 max-w-md text-center text-white/70">
+      <p className="relative mt-3 max-w-md text-center text-white/90 font-medium">
+        Web- und Produkt-Analytics
+      </p>
+      <p className="relative mt-2 max-w-md text-center text-white/70">
         Erfassung des Nutzerverhaltens auf Webseiten ohne die Speicherung von
         Cookies. Es dient dazu, Marketingdaten zu messen, wenn Nutzer Cookies
         ablehnen oder Browser sie blockieren, und hilft, die Anforderungen der
